@@ -10,25 +10,17 @@ export type TComponentProps = {
 } & TReduxProps
 
 const Rates: React.FC<TComponentProps> = ({ getCurrency, currency }) => {
-  const currecies: string[] = ["USD", "EUR", "RUR"];
-  const defaultCurrency = currecies[0];
+
   const chartOptions = {}
   const [chartSeries, setChartSeries] = useState([]);
-  const [selectedCurrency, selectCurrency] = useState<string>(defaultCurrency)
   const type = 'line'
 
+
+  console.log({ getCurrency, currency });
+
   useEffect(() => {
-    const ids = {
-      'USD': '145',
-      'EUR': '292',
-      'RUR': '298',
-    }
-
-    getCurrency(ids[selectedCurrency]);
-    console.log(selectedCurrency);
-    console.log(selectedCurrency, ids[selectedCurrency]);
-  }, [selectedCurrency])
-
+    getCurrency('145');
+  }, [])
   useEffect(() => {
     const currencies = currency.data.reduce((accumulator, item) => {
       let day = item.Date;
@@ -39,17 +31,14 @@ const Rates: React.FC<TComponentProps> = ({ getCurrency, currency }) => {
     setChartSeries(currencies)
   }, [currency])
 
-  const curreciesOptions = () => (
-    <Menu>
-      {currecies.map(i => (
-        // @ts-ignore
-        <Menu.Item key={i} onClick={(e) => { selectCurrency(e.keyPath[0])} }>
-          {i}
-        </Menu.Item>
-      ))}
-    </Menu>
-  )
-
+  const changeCurrency = (currID) => {
+    const ids = {
+      'USD': 145,
+      'EUR': 292,
+      'RUR': 298,
+    }
+    getCurrency(ids[currID]);
+  }
   return (
     <StyledContainer>
       <ApexChart
@@ -64,9 +53,21 @@ const Rates: React.FC<TComponentProps> = ({ getCurrency, currency }) => {
         width={500}
         height={300}
       />
-      <Dropdown overlay={curreciesOptions}>
-        <a>
-        Select currency <DownOutlined />
+      <Dropdown overlay={() => (
+        <Menu>
+          <Menu.Item key="USD" onClick={() => { changeCurrency("USD") }}>
+            USD
+          </Menu.Item>
+          <Menu.Item key="EUR" onClick={() => { changeCurrency("EUR") }}>
+            EUR
+        </Menu.Item>
+          <Menu.Item key="RUR" onClick={() => { changeCurrency("RUR") }}>
+            RUR
+        </Menu.Item>
+        </Menu>
+      )}>
+        <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+          Select currency <DownOutlined />
         </a>
       </Dropdown>
     </StyledContainer >
