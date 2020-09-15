@@ -1,9 +1,0 @@
-.idea/
-.vscode/
-/node_modules
-/coverage
-/dist
-/temp
-.cache
-.DS_Store
-id_rsa
